@@ -1,9 +1,13 @@
 import re
 from elasticsearch import Elasticsearch
+import datetime
+import time
 
 # path of log file
-infile = r"C:\Users\wangw\elk\project\2018.06.22-24_Default.0\example1.log"
+infile = r"C:\Users\wangw\elk\project\2018.06.22-24_Default.0\Default.0.log"
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+timeNow = datetime.datetime.now().isoformat().lower()
+print(timeNow)
 
 def searchEvent(filePath,es):
     with open(filePath) as f:
@@ -12,8 +16,11 @@ def searchEvent(filePath,es):
         # print(line)
         list = line.split(' ')
         ev = {}
-        ev["time"] = '%s %s' % (list[0],list[1])
-        ev["processName"] = list[4]            
+        logTime = '%s %s' % (list[0],list[1])
+        timeArray = datetime.datetime.strptime(logTime, "%Y-%m-%d %H:%M:%S").isoformat()
+        ev["logTime"] = timeArray
+        ev["logLevel"] = list[2].split('.')[1]
+        ev["processName"] = list[4].split(':')[0]           
         # another method to split memory data
         # if 'MEM' in line:
         # memSet = line.split('MEM')[1].split(' ')[0]
@@ -25,15 +32,11 @@ def searchEvent(filePath,es):
         # regex for matching current memory and peak memory
         memSet = re.match(r'.*MEM\[(\d*):(\d*)\].*', line)
         if memSet:
-            ev["currentMem"] = memSet.group(1)
-            ev["peakMem"] = memSet.group(2)
+            ev["currentMem"] = int(memSet.group(1))
+            ev["peakMem"] = int(memSet.group(2))
+        ev["description"] = line.split('  ',1)[1]
         print(ev)
-        es.index(index='poker-dod', doc_type='document', body=ev)
-        # eventList = {}
-        # eventList.append('%s:%s %s' % ("time",list[0],list[1]))
-        # eventList.append('%s:%s' % ("proName",list[4]))
-        # print(eventList)          
-    # return eventList
+        es.index(index=timeNow, doc_type='document', body=ev)
 
 searchEvent(infile,es)
 
