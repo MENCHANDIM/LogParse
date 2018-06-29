@@ -382,7 +382,7 @@
               "field": "logTime",
               "id": "3",
               "settings": {
-                "interval": "auto",
+                "interval": "1s",
                 "min_doc_count": 0,
                 "trimEdges": 0
               },
@@ -450,8 +450,8 @@
     "list": []
   },
   "time": {
-    "from": "2018-06-24T06:02:52.227Z",
-    "to": "2018-06-24T06:22:37.518Z"
+    "from": "2018-06-24T06:05:57.247Z",
+    "to": "2018-06-24T06:08:09.365Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -479,7 +479,7 @@
     ]
   },
   "timezone": "",
-  "title": "Log Information",
+  "title": "Log Information demo",
   "uid": "Ab5Y_7Diz",
-  "version": 16
+  "version": 32
 }
